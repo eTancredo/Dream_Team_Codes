@@ -19,7 +19,7 @@ from scipy.fftpack import fft
 
 
 
-t = np.arange(0,10,0.001)
+t = np.arange(0,1,0.001)
 x = 10*np.sin(2*np.pi*100*t) + 20.0*np.sin(2*np.pi*10.0*t)
 
 N = np.int(np.prod(t.shape))# tamanho da lista

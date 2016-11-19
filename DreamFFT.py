@@ -85,7 +85,7 @@ plt.axis([0.0,0.1,-10*amplitude,10*amplitude])
 
 #FFT
 plt.figure(2)  
-xf = np.linspace(0.0, 1.0/(2.0*T), Fs/2)
+xf = np.linspace(0.0, 1.0/(2.0*T), N/2)
 yf = fft(signal)
 plt.plot(xf, 2.0/N * np.abs(yf[0:np.int(Fs/2)]))
 plt.grid()

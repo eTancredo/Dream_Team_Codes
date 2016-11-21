@@ -8,8 +8,8 @@ Pending Changes
 
 1- Transform code into function and use signal as input
 
-2- Se, em vez dos valores de tempo, for fornecido o valor de frequencia de aquisição, criar o
-   vetor de tempo a partir de Fs.
+2- If the sensor raise only the measured values, without the associated time,
+   add a feature that, given the sampling frequency, generates the time vector
 
 """
 
@@ -45,6 +45,25 @@ def signalgenerator(freq1, freq2 = 0, freq3 = 0):
     
     signal = wave1 + wave2 + wave3 + wave4 + wave5 + wave6 + noise
     return signal
+
+
+
+
+# Given 2 frequency values, creates a plot of the FFT in the interval
+# delimited by them
+def freqZoom(yf, xf, lowFreq, highFreq, figureNumber, limit = False):
+    
+    N = np.int(np.prod(yf.shape))
+    plt.figure(figureNumber)  
+    plt.plot(xf[int(lowFreq):int(highFreq) + 1], 2.0/N * np.abs(yf[int(lowFreq):int(highFreq) + 1]))
+    plt.grid()
+    plt.xlabel('Frequency (Hz)')
+    plt.ylabel('Amplitude')
+    if not limit:
+        # Draw horizontal line at y = limit (unfinished)
+        pass
+
+#TODO: add a feature that monitor the amplitudes within the interval of freqZoom
 
 
 """
@@ -87,8 +106,13 @@ plt.axis([0.0,0.1,-10*amplitude,10*amplitude])
 plt.figure(2)  
 xf = np.linspace(0.0, 1.0/(2.0*T), N/2)
 yf = fft(signal)
-plt.plot(xf, 2.0/N * np.abs(yf[0:np.int(Fs/2)]))
+plt.plot(xf, 2.0/N * np.abs(yf[0:np.int(N/2)]))
 plt.grid()
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('Amplitude')
+
+freqZoom(yf,xf,0,1500,3)
+freqZoom(yf,xf,355,1000,4,0.8)
+
+
 plt.show()

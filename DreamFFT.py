@@ -51,17 +51,21 @@ def signalgenerator(freq1, freq2 = 0, freq3 = 0):
 
 # Given 2 frequency values, creates a plot of the FFT in the interval
 # delimited by them
-def freqZoom(yf, xf, lowFreq, highFreq, figureNumber, limit = False):
+def freqZoom(yf, xf, lowFreq, highFreq, limit = False):
     
     N = np.int(np.prod(yf.shape))
-    plt.figure(figureNumber)  
-    plt.plot(xf[int(lowFreq):int(highFreq) + 1], 2.0/N * np.abs(yf[int(lowFreq):int(highFreq) + 1]))
-    plt.grid()
-    plt.xlabel('Frequency (Hz)')
-    plt.ylabel('Amplitude')
-    if not limit:
-        # Draw horizontal line at y = limit (unfinished)
-        pass
+    ax = plt.figure().add_subplot(111)  
+    ax.plot(xf[int(lowFreq):int(highFreq) + 1], 2.0/N * np.abs(yf[int(lowFreq):int(highFreq) + 1]))
+    ax.grid()
+    ax.set_xlabel('Frequency (Hz)')
+    ax.set_ylabel('Amplitude')
+    ax.set_xlim([int(lowFreq), int(highFreq)])
+    message = "Ok"
+    if limit != False:     
+        ax.hlines(limit, int(lowFreq), int(highFreq) + 1, color = 'r')
+        if np.max(2.0/N * np.abs(yf[int(lowFreq):int(highFreq) + 1])) >= limit:
+            message = "Danger"
+    ax.set_title("%.1f Hz to %.1f Hz - %s"%(lowFreq,highFreq,message))
 
 #TODO: add a feature that monitor the amplitudes within the interval of freqZoom
 
@@ -95,24 +99,28 @@ plots
 """
 
 #Plot xy
-plt.figure(1)  
-plt.plot(t, signal)
-plt.xlabel('Time (seconds)')
-plt.ylabel('Amplitude')
-plt.grid()
-plt.axis([0.0,0.1,-10*amplitude,10*amplitude])
+fig1 = plt.figure(1)
+ax1 = fig1.add_subplot(111)
+ax1.plot(t, signal)
+ax1.set_xlabel('Time (seconds)')
+ax1.set_ylabel('Amplitude')
+ax1.grid()
+ax1.axis([0.0,0.1,-10*amplitude,10*amplitude])
+ax1.set_title("Time Domain")
 
 #FFT
-plt.figure(2)  
+fig2 = plt.figure(2)
+ax2 = fig2.add_subplot(111)
 xf = np.linspace(0.0, 1.0/(2.0*T), N/2)
 yf = fft(signal)
-plt.plot(xf, 2.0/N * np.abs(yf[0:np.int(N/2)]))
-plt.grid()
-plt.xlabel('Frequency (Hz)')
-plt.ylabel('Amplitude')
+ax2.plot(xf, 2.0/N * np.abs(yf[0:np.int(N/2)]))
+ax2.grid()
+ax2.set_xlabel('Frequency (Hz)')
+ax2.set_ylabel('Amplitude')
+ax2.set_title("Frequency Domain")
 
-freqZoom(yf,xf,0,1500,3)
-freqZoom(yf,xf,355,1000,4,0.8)
+freqZoom(yf,xf,0,1500, 0.8)
+freqZoom(yf,xf,355,1000)
 
 
 plt.show()

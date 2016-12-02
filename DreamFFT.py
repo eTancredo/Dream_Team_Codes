@@ -19,6 +19,7 @@ from scipy.fftpack import fft
 
 
 
+
 """
 functions space
 """
@@ -65,21 +66,28 @@ def csv_data(file_path):
 
 # Given 2 frequency values, creates a plot of the FFT in the interval
 # delimited by them
-def freqZoom(yf, xf, lowFreq, highFreq, limit = False):
+def freqZoom(yf, xf, lowFreq, highFreq, noisePct = 0, limit = False):
     
     N = np.int(np.prod(yf.shape))
     Fs = 2*xf[-1]
-    ax = plt.figure().add_subplot(111)  
-    ax.plot(xf[int(lowFreq*N/Fs) : int(highFreq*N/Fs) + 1], 2.0/N * np.abs(yf[int(lowFreq*N/Fs):int(highFreq*N/Fs) + 1]))
+    index0 = int(lowFreq*N/Fs)
+    indexF = int(highFreq*N/Fs) + 1
+    x_plot = xf[index0:indexF]
+    y_plot = 2.0/N * np.abs(yf[index0:indexF])
+    peak_value = np.max(y_plot)
+    ax = plt.figure().add_subplot(111)
+    ax.plot(x_plot, y_plot)
     ax.grid()
+    ax.set_ylim([peak_value*noisePct, peak_value])
+    ax.set_xlim([int(lowFreq)-10, int(highFreq) + 10])
     ax.set_xlabel('Frequency (Hz)')
     ax.set_ylabel('Amplitude')
-    #ax.set_xlim([int(lowFreq), int(highFreq)])
-    message = "Ok"
+    
+    message = "NO DANGER"
     if limit != False:     
-        ax.hlines(limit, int(lowFreq), int(highFreq) + 1, color = 'r')
-        if np.max(2.0/N * np.abs(yf[int(lowFreq*N/Fs):int(highFreq*N/Fs) + 1])) >= limit:
-            message = "Danger"
+        ax.plot(x_plot, [limit for x in x_plot] , color = 'r')
+        if peak_value >= limit:
+            message = "DANGER"
     ax.set_title("%.1f Hz to %.1f Hz - %s"%(lowFreq,highFreq,message))
 
 #TODO: add a feature that monitor the amplitudes within the interval of freqZoom
@@ -121,7 +129,6 @@ t, signal = csv_data("CSV_FILES/" + file_name)
 N = np.int(np.prod(t.shape))# list length
 Fs = 1/(t[1]-t[0]) 	# sample frequency
 T = 1/Fs;
-print "# Samples:", N
 
 
 """
@@ -149,8 +156,9 @@ ax2.set_xlabel('Frequency (Hz)')
 ax2.set_ylabel('Amplitude')
 ax2.set_title("Frequency Domain")
 
-#freqZoom(yf,xf,0,1500, 0.8)
-freqZoom(yf,xf,0,2000,0.05)
+freqZoom(yf, xf, 0, 1000, noisePct = 0, limit = 0.05)
+freqZoom(yf, xf, 0, 500, noisePct = 0.5, limit = 0.08)
+freqZoom(yf, xf, 500, 1000, noisePct = 0.2, limit = 0.04)
 
 
 plt.show()

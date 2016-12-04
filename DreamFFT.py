@@ -2,7 +2,7 @@
 """
 Created on Fri Nov 18 17:23:09 2016
 
-@author: Dream Team
+@author: Eduardo Tancredo & Caio Bromonschenkel
 
 Pending Changes
 
@@ -12,10 +12,18 @@ Pending Changes
    add a feature that, given the sampling frequency, generates the time vector
 
 """
-
+import csv
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.fftpack import fft
+
+
+
+"""
+machines database
+"""
+
+#TODO: create database with machine names and frequecies
 
 
 
@@ -90,7 +98,19 @@ def freqZoom(yf, xf, lowFreq, highFreq, noisePct = 0, limit = False):
             message = "DANGER"
     ax.set_title("%.1f Hz to %.1f Hz - %s"%(lowFreq,highFreq,message))
 
-#TODO: add a feature that monitor the amplitudes within the interval of freqZoom
+
+
+##################### criticality analysis ##################
+
+#given a frequency interval and a acceptable amplitude returns the frequencies
+#which amplitudes are higher than the acceptable (in FFT)
+
+def criticalanalysis(lowcritfreq,highcritfreq,critamplitude):
+    importantfreqs = np.arange(int(xf[int(lowcritfreq*N/Fs)]),int(xf[int(highcritfreq*N/Fs)]),0.05)
+    for freq in importantfreqs:
+        
+        if amplitudes[int(freq*N/Fs)] > critamplitude:
+            print freq, amplitudes[int(freq*N/Fs)], "DANGER"
 
 
 
@@ -131,6 +151,10 @@ Fs = 1/(t[1]-t[0]) 	# sample frequency
 T = 1/Fs;
 
 
+
+
+
+
 """
 plots
 """
@@ -149,16 +173,35 @@ ax1.set_title("Time Domain")
 fig2 = plt.figure(2)
 ax2 = fig2.add_subplot(111)
 xf = np.linspace(0.0, 1.0/(2.0*T), N/2)
-yf = fft(signal)
-ax2.plot(xf, 2.0/N * np.abs(yf[0:np.int(N/2)]))
+yf = np.fft.fft(signal)
+
+#with open("fft.csv", "wb") as data:
+    #writer = csv.writer(data)
+   # writer.writerow(yf)
+#with open("time.csv", "wb") as time:
+    #writer = csv.writer(time)
+    #writer.writerow(xf)
+amplitudes = 2.0/N * np.abs(yf[0:np.int(N/2)])    
+ax2.plot(xf, amplitudes)
 ax2.grid()
 ax2.set_xlabel('Frequency (Hz)')
 ax2.set_ylabel('Amplitude')
 ax2.set_title("Frequency Domain")
-
 freqZoom(yf, xf, 0, 1000, noisePct = 0, limit = 0.05)
 freqZoom(yf, xf, 0, 500, noisePct = 0.5, limit = 0.08)
 freqZoom(yf, xf, 500, 1000, noisePct = 0.2, limit = 0.04)
 
 
 plt.show()
+
+"""
+analysis
+"""
+def criticalanalysis(lowcritfreq,highcritfreq,critamplitude):
+    importantfreqs = np.arange(int(xf[int(lowcritfreq*N/Fs)]),int(xf[int(highcritfreq*N/Fs)]),0.05)
+    for freq in importantfreqs:
+        
+        if amplitudes[int(freq*N/Fs)] > critamplitude:
+            print freq, amplitudes[int(freq*N/Fs)], "DANGER"
+    
+criticalanalysis(160,180,0.05)

@@ -22,9 +22,18 @@ from scipy.fftpack import fft
 """
 machines database
 """
+try:
+    machine = int(raw_input("Enter machine number 0 or 1: "))
+    if not (0 <= machine <= 1):
+        raise ValueError()
+except ValueError:
+    print "Invalid Option, you needed to type a 0 or 1: "
+    machine = int(raw_input("Enter machine number 0 or 1: "))
+else:
+    print "Your machine is", machine
+    
 
-#TODO: create database with machine names and frequecies
-
+database = [[150,200,0.05,2000,2100,0.015,4400,4500,0.00225],[100,150,0.05,2000,2050,0.015]]
 
 
 
@@ -198,5 +207,6 @@ plt.show()
 analysis
 """
 
-    
-criticalanalysis(160,180,0.05)
+for i in range(len(database[machine])/3):
+    print 'from', database[machine][3*i] ,'hertz' ,'to', database[machine][3*i+1] ,'hertz' ,',', 'acceptable amplitude', database[machine][3*i+2]
+    criticalanalysis(database[machine][3*i],database[machine][3*i+1],database[machine][3*i+2])

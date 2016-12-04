@@ -208,5 +208,7 @@ analysis
 """
 
 for i in range(len(database[machine])/3):
-    print 'from', database[machine][3*i] ,'hertz' ,'to', database[machine][3*i+1] ,'hertz' ,',', 'acceptable amplitude', database[machine][3*i+2]
+    print ''
+    print 'From', database[machine][3*i] ,'hertz' ,'to', database[machine][3*i+1] ,'hertz' ,',', 'acceptable amplitude', database[machine][3*i+2]
+    print ''
     criticalanalysis(database[machine][3*i],database[machine][3*i+1],database[machine][3*i+2])

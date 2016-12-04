@@ -197,11 +197,6 @@ plt.show()
 """
 analysis
 """
-def criticalanalysis(lowcritfreq,highcritfreq,critamplitude):
-    importantfreqs = np.arange(int(xf[int(lowcritfreq*N/Fs)]),int(xf[int(highcritfreq*N/Fs)]),0.05)
-    for freq in importantfreqs:
-        
-        if amplitudes[int(freq*N/Fs)] > critamplitude:
-            print freq, amplitudes[int(freq*N/Fs)], "DANGER"
+
     
 criticalanalysis(160,180,0.05)

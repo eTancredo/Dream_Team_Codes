@@ -4,18 +4,12 @@ Created on Fri Nov 18 17:23:09 2016
 
 @author: Eduardo Tancredo & Caio Bromonschenkel
 
-Pending Changes
-
-1- Transform code into function and use signal as input
-
-2- If the sensor raise only the measured values, without the associated time,
-   add a feature that, given the sampling frequency, generates the time vector
 
 """
-import csv
+
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.fftpack import fft
+
 
 
 
@@ -63,7 +57,7 @@ def signalgenerator(freq1, freq2 = 0, freq3 = 0):
     # last one is the number of elements you get in array noise
     
     noise = np.random.normal(0,1,40000)
-#TODO: create a method that generates more waves and maybe add noise
+
 
     
     signal = wave1 + wave2 + wave3 + wave4 + wave5 + wave6 + noise
@@ -119,7 +113,7 @@ def criticalanalysis(lowcritfreq,highcritfreq,critamplitude):
     for freq in importantfreqs:
         
         if amplitudes[int(freq*N/Fs)] > critamplitude:
-            print freq, amplitudes[int(freq*N/Fs)], "DANGER"
+            print "Frequency:",freq,' ',"Amplitude:", ("%.5f" % amplitudes[int(freq*N/Fs)]),' ', "DANGER"
 
 
 
@@ -146,7 +140,6 @@ file_name = "car_engine.csv"
 
 ####################################
 
-#TODO: whats the best step for t variable so that we can have a good measuement?(considering the amount of harmonics)
 """
 process
 """
